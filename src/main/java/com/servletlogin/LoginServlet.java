@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import javax.servlet.annotation.WebServlet;
 
 @WebServlet(description = "Login Servlet Testing", urlPatterns = { "/LoginServlet" }, initParams = {
-		@WebInitParam(name = "user", value = "Anant"), @WebInitParam(name = "password", value = "Anant@123") })
+		@WebInitParam(name = "user", value = "Jeeva"), @WebInitParam(name = "password", value = "BridgeLabz") })
 
 public class LoginServlet extends HttpServlet {
 
@@ -23,25 +23,29 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		/*
-		 * / Get Request parameters for userId and Password
-		 */
+		// get request parameters for userID and password
 		String user = req.getParameter("user");
 		String pwd = req.getParameter("pwd");
+
+		// get servlet config init params
+		String userID = getServletConfig().getInitParameter("user");
+		String password = getServletConfig().getInitParameter("password");
+
 		/*
-		 * / get servlet configuration init parameters
+		 * Purpose : Validate username using Regular Expression Name starts with Cap and
+		 * has minimum 3 characters
 		 */
-		String userId = getServletConfig().getInitParameter("userId");
-		String pass = getServletConfig().getInitParameter("password");
-		if (userId.equals(user) && pass.equals(pwd)) {
+
+		String regexName = "^[A-Z]{1}[a-zA-Z]{2,}$";
+
+		if (userID.equals(user) && userID.matches(regexName) && password.equals(pwd)) {
 			req.setAttribute("user", user);
 			req.getRequestDispatcher("LoginSuccess.jsp").forward(req, resp);
 		} else {
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
 			PrintWriter out = resp.getWriter();
-			out.println("<font colour=red> Either User name or Password is Wrong</font>");
+			out.println("<font color=red>Either username or password is incorrect!</font>");
 			rd.include(req, resp);
-
 		}
 	}
 
